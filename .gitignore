@@ -30,5 +30,6 @@
 *.exe
 *.out
 *.app
-/.vs/OpenGL-Project
-/OpenGL-Project/x64
+.vs/
+bin/
+bin-int/
