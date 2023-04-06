@@ -31,3 +31,4 @@
 *.out
 *.app
 /.vs/OpenGL-Project
+/OpenGL-Project/x64/Debug
