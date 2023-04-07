@@ -153,7 +153,7 @@ int main(void)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
 
-    ShaderProgramSource src = ParseShader("res/shaders/Basic.shaders");
+    ShaderProgramSource src = ParseShader("res/shaders/Basic.shader");
     std::cout << "Vertex\n";
     std::cout << src.VertexSource << std::endl;
     std::cout << "Fragment\n";
