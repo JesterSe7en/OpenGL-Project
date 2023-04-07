@@ -2,6 +2,58 @@
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
+
+static unsigned int CompileShader(unsigned int type, const std::string& source) {
+    unsigned int id = glCreateShader(type);
+
+    const char* src = source.c_str();
+    glShaderSource(id, 1, &src, nullptr);
+    glCompileShader(id);
+
+    int result;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
+    // error handling
+    if (result == GL_FALSE) {
+        int length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+
+        char* message = (char*)alloca(length * sizeof(char));
+        glGetShaderInfoLog(id, length, &length, message);
+
+        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << std::endl;
+        std::cout << message << std::endl;
+
+        glDeleteShader(id);
+        return 0;
+    }
+
+    return id;
+}
+
+
+// Shaders are just strings of code, we are passing it to OpenGL to compile and create a program object
+static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
+    
+    // We are using this "program" to combine these two shaders
+    unsigned int program = glCreateProgram();       // returns a pointer to the blank program object
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    // The follow operates similar to how C++ compiles/links code
+    // You first attach shaders to the program objecct
+    // Link the program and validate the code is correct
+    // Now you have "intermediate" shaders, so lets clean up by deleting them
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+    glLinkProgram(program);
+    glValidateProgram(program);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+    return program;
+}
+
 int main(void)
 {
     // use docs.gl for documentation
@@ -61,6 +113,32 @@ int main(void)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
 
+    // The actual shader code -- normally this will be in a file instead of hard coding string
+    std::string vertextShader =
+        "#version 330 core\n"
+        "\n"
+        "layout(location = 0) in vec4 position;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "   glPosition = position;"
+        "}\n";
+
+    // The actual fragment code 
+    std::string fragmentShader =
+        "#version 330 core\n"
+        "\n"
+        "layout(location = 0) out vec4 color;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "   color = vec4(1.0, 0.0, 0.0, 1.0);\n"
+        "}\n";
+
+    // color is in rgba float normalized format.  e.g. 1 = 255 in a color value,
+
+    unsigned int shader = CreateShader(vertextShader, fragmentShader);
+    glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
