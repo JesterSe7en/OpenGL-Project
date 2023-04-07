@@ -175,6 +175,7 @@ int main(void)
 
         // this function call knows what buffer to use because on line 39, we bound the buffer
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
+        // last param is the number of verticies to draw
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         /* Swap front and back buffers */
