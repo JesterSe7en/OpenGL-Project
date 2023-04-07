@@ -135,14 +135,12 @@ int main(void)
 
     // specify the data of our buffer
     float position[] = {
-        -0.5f, -0.5f,
-        0.5f, -0.5f,
-        0.5f, 0.5f,
-
-        0.5f, 0.5f,
-        -0.5f, 0.5f,
-        -0.5f, -0.5f,
+        -0.5f, -0.5f,   //0
+        0.5f, -0.5f,    //1
+        0.5f, 0.5f,     //2
+        -0.5f, 0.5f,    //3
     };
+
     glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), position, GL_STATIC_DRAW);
 
 
@@ -155,6 +153,17 @@ int main(void)
     // 5th param = stride = the number of bytes the pointer needs to go to find the next VERTEX aka next blob (NOT next attribute)
     // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
+    // Index Buffer - this MUST be unsigned int
+	unsigned int indicies[] = {
+	0, 1, 2,
+	2, 3, 0
+	};
+
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicies, GL_STATIC_DRAW);
 
 
     ShaderProgramSource src = ParseShader("res/shaders/Basic.shader");
@@ -176,7 +185,9 @@ int main(void)
         // this function call knows what buffer to use because on line 39, we bound the buffer
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
         // last param is the number of verticies to draw
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
