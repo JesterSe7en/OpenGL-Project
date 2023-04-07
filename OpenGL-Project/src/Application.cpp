@@ -24,7 +24,7 @@ static ShaderProgramSource ParseShader(const std::string& filePath) {
     ShaderType type = ShaderType::NONE;
     while (getline(stream, line)) {
         if (line.find("#shader") != std::string::npos) {
-            if (line.find("vertex")) {
+            if (line.find("vertex") != std::string::npos) {
                 // set mode to vertex
                 type = ShaderType::VERTEX;
             }
@@ -152,8 +152,15 @@ int main(void)
     // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
 
-    unsigned int shader = CreateShader(vertextShader, fragmentShader);
-    glUseProgram(shader);
+
+    ShaderProgramSource src = ParseShader("res/shaders/Basic.shaders");
+    std::cout << "Vertex\n";
+    std::cout << src.VertexSource << std::endl;
+    std::cout << "Fragment\n";
+    std::cout << src.FragmentSource << std::endl;
+
+    //unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
+    //glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -178,7 +185,7 @@ int main(void)
         glfwPollEvents();
     }
 
-    glDeleteProgram(shader);
+    //glDeleteProgram(shader);
 
     glfwTerminate();
     return 0;
