@@ -159,8 +159,8 @@ int main(void)
     std::cout << "Fragment\n";
     std::cout << src.FragmentSource << std::endl;
 
-    //unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
-    //glUseProgram(shader);
+    unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
+    glUseProgram(shader);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -168,11 +168,6 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //glBegin(GL_TRIANGLES);
-        //glVertex2f(-0.5f, -0.5f);
-        //glVertex2f(0.0f, 0.5f);
-        //glVertex2f(0.5f, -0.5f);
-        //glEnd();
 
         // this function call knows what buffer to use because on line 39, we bound the buffer
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
