@@ -134,12 +134,16 @@ int main(void)
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
     // specify the data of our buffer
-    float position[6] = {
+    float position[] = {
         -0.5f, -0.5f,
-        0.0f, 0.5f,
         0.5f, -0.5f,
+        0.5f, 0.5f,
+
+        0.5f, 0.5f,
+        -0.5f, 0.5f,
+        -0.5f, -0.5f,
     };
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), position, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), position, GL_STATIC_DRAW);
 
 
     // This is to enable the attribute in the array.  Otherwise the attribute will do nothing
@@ -154,10 +158,10 @@ int main(void)
 
 
     ShaderProgramSource src = ParseShader("res/shaders/Basic.shader");
-    std::cout << "Vertex\n";
-    std::cout << src.VertexSource << std::endl;
-    std::cout << "Fragment\n";
-    std::cout << src.FragmentSource << std::endl;
+    //std::cout << "Vertex\n";
+    //std::cout << src.VertexSource << std::endl;
+    //std::cout << "Fragment\n";
+    //std::cout << src.FragmentSource << std::endl;
 
     unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
     glUseProgram(shader);
@@ -171,7 +175,7 @@ int main(void)
 
         // this function call knows what buffer to use because on line 39, we bound the buffer
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
