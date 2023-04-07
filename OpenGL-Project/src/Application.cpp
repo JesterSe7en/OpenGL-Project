@@ -4,6 +4,7 @@
 
 int main(void)
 {
+    // use docs.gl for documentation
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -31,7 +32,9 @@ int main(void)
     std::cout << glGetString(GL_VERSION) << std::endl;
     
     
-    // this is a basic vertex buffer (1 vertex length = 4 bytes?)
+    // this is a basic vertex buffer
+    // param #1 = number of buffer objects names to generate
+    // param #2  = specifies the array in which the generated object names are stored
     unsigned int buffer;
     glGenBuffers(1, &buffer);
 
@@ -45,6 +48,18 @@ int main(void)
         0.5f, -0.5f,
     };
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), position, GL_STATIC_DRAW);
+
+
+    // This is to enable the attribute in the array.  Otherwise the attribute will do nothing
+    glEnableVertexAttribArray(0);
+
+    // Vertex is a blob of data
+    // Each vertex can be comprised of multiple attributes e.g. position, texture coordinates, color, etc.
+    // We are using VertextAttribPointer to describe our bound buffer attributes via an indexing system
+    // 5th param = stride = the number of bytes the pointer needs to go to find the next VERTEX aka next blob (NOT next attribute)
+    // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+
 
 
     /* Loop until the user closes the window */
