@@ -211,7 +211,7 @@ int main(void)
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
         // last param is the number of verticies to draw
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
 
         /* Swap front and back buffers */
         GLCall(glfwSwapBuffers(window));
