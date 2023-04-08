@@ -5,10 +5,35 @@
 #include <string>
 #include <sstream>
 
+// this define only works on MSVC compiler
+#define ASSERT(x) if (!(x)) __debugbreak();
+
+#define DEBUG = 1
+
+#ifdef DEBUG
+#define GLCall(x) GlClearError();\
+    x;\
+    ASSERT(GLLogCall())
+#else
+#define GLCall(x) x
+#endif
+
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
+
+static void GLClearError() {
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall() {
+    while (GLenum error = glGetError()) {
+        std::cout << "[OpenGL Error] (" << error << ")\n";
+        return false;
+    }
+    return true;
+}
 
 static ShaderProgramSource ParseShader(const std::string& filePath) {
     // we need to parse and find our special syntax e.g. (#shader vertex) 
@@ -186,8 +211,9 @@ int main(void)
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
         // last param is the number of verticies to draw
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
+        GLClearError();
+        glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr);  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
+        ASSERT(GLLogCall());
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
