@@ -194,6 +194,8 @@ int main(void)
     // 5th param = stride = the number of bytes the pointer needs to go to find the next VERTEX aka next blob (NOT next attribute)
     // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+    // this line of code also links the VAO to the buffer array specificall the first param
+
 
     // Vertex Attrib is not directly assoicated with a vertex buffer
     // Vertex buffer is just a blob of data.  The attrib is dissassociated from the buffer until we enable that attr with that buffer array.
