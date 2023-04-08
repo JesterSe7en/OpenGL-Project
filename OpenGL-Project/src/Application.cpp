@@ -168,7 +168,7 @@ int main(void)
         -0.5f, 0.5f,    //3
     };
 
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), position, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), position, GL_STATIC_DRAW));
 
 
     // This is to enable the attribute in the array.  Otherwise the attribute will do nothing
