@@ -129,6 +129,14 @@ int main(void)
     if (!glfwInit())
         return -1;
 
+    // by default this is running in compatibility mode
+    // to demonstrate VAO (vertex array objects), we need to set this to core mode
+    // VAO - https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Array_Object
+    // glfwWindowHint - https://www.glfw.org/docs/3.3/group__window.html#ga7d9c8c62384b1e2821c4dc48952d2033
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     if (!window)
@@ -150,6 +158,11 @@ int main(void)
 
     // just sample code to ensure glew is linked
     std::cout << glGetString(GL_VERSION) << std::endl;
+
+    // VAO - vertex array object
+    unsigned int vao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
     
     
     // this is a basic vertex buffer
@@ -181,6 +194,9 @@ int main(void)
     // 5th param = stride = the number of bytes the pointer needs to go to find the next VERTEX aka next blob (NOT next attribute)
     // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+
+    // Vertex Attrib is not directly assoicated with a vertex buffer
+    // Vertex buffer is just a blob of data.  The attrib is dissassociated from the buffer until we enable that attr with that buffer array.
 
     // Index Buffer - this MUST be unsigned int
 	unsigned int indicies[] = {
