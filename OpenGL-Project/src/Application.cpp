@@ -11,7 +11,7 @@
 #define DEBUG = 1
 
 #ifdef DEBUG
-#define GLCall(x) GlClearError();\
+#define GLCall(x) GLClearError();\
     x;\
     ASSERT(GLLogCall())
 #else
