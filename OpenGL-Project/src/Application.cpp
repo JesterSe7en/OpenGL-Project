@@ -137,7 +137,7 @@ int main(void)
     }
 
     /* Make the window's context current */
-    GLCall(glfwMakeContextCurrent(window));
+    glfwMakeContextCurrent(window);
 
 
     // From docs: "you need to create a valid OpenGL rendering context and call glewInit() to initialize the extension entry points"
