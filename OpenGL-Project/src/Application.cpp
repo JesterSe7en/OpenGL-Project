@@ -200,6 +200,15 @@ int main(void)
     unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
     GLCall(glUseProgram(shader));
 
+
+    // In order to set the uniform, a program (aka a shader) must be bound
+    // i.e. glUniform must be called after glUseProgram
+    // u_Color is defined in our basic.shader.  This variable name (including case) must match
+    // Uniform allows us to define values in C++ and pass it to our shader program
+    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+    ASSERT(location != -1);
+	GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
