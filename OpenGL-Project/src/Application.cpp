@@ -139,6 +139,8 @@ int main(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    // turn on vsync
+    glfwSwapInterval(1);
 
     // From docs: "you need to create a valid OpenGL rendering context and call glewInit() to initialize the extension entry points"
     if (glewInit() != GLEW_OK) {
@@ -205,22 +207,34 @@ int main(void)
     // i.e. glUniform must be called after glUseProgram
     // u_Color is defined in our basic.shader.  This variable name (including case) must match
     // Uniform allows us to define values in C++ and pass it to our shader program
+    // Uniforms are used as a per frame thing
     GLCall(int location = glGetUniformLocation(shader, "u_Color"));
     ASSERT(location != -1);
-	GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
-
+	
+    float r = 0.0f;
+    float increment = 0.05f;
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+        GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 
         // this function call knows what buffer to use because on line 39, we bound the buffer
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
         // last param is the number of verticies to draw
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
+
+        if (r > 1.0f) {
+            increment = -0.05f;
+        }
+        else if (r < 0.0f) {
+            increment = 0.05f;
+        }
+
+        r += increment;
 
         /* Swap front and back buffers */
         GLCall(glfwSwapBuffers(window));
