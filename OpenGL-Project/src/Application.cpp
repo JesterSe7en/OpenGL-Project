@@ -5,35 +5,15 @@
 #include <string>
 #include <sstream>
 
-// this define only works on MSVC compiler
-#define ASSERT(x) if (!(x)) __debugbreak();
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
-#define DEBUG = 1
-
-#ifdef DEBUG
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-#else
-#define GLCall(x) x
-#endif
 
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
-
-static void GLClearError() {
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line) {
-    while (GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] - (Code: " << error << ") - "<< function << " - " << file << ": Line #" << line << std::endl;
-        return false;
-    }
-    return true;
-}
 
 static ShaderProgramSource ParseShader(const std::string& filePath) {
     // we need to parse and find our special syntax e.g. (#shader vertex) 
@@ -164,25 +144,20 @@ int main(void)
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
     
-    
-    // this is a basic vertex buffer
-    // param #1 = number of buffer objects names to generate
-    // param #2  = specifies the array in which the generated object names are stored
-    unsigned int buffer;
-    GLCall(glGenBuffers(1, &buffer));
+	float position[] = {
+	-0.5f, -0.5f,   //0
+	0.5f, -0.5f,    //1
+	0.5f, 0.5f,     //2
+	-0.5f, 0.5f,    //3
+	};
 
-    // this is like "selecting the buffer" in opengl this is called binding
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+	unsigned int indicies[] = {
+	0, 1, 2,
+	2, 3, 0
+	};
 
-    // specify the data of our buffer
-    float position[] = {
-        -0.5f, -0.5f,   //0
-        0.5f, -0.5f,    //1
-        0.5f, 0.5f,     //2
-        -0.5f, 0.5f,    //3
-    };
-
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), position, GL_STATIC_DRAW));
+    VertexBuffer vb(position, 4 * 2 * sizeof(float));
+    IndexBuffer ib(indicies, 6);
 
 
     // This is to enable the attribute in the array.  Otherwise the attribute will do nothing
@@ -195,21 +170,6 @@ int main(void)
     // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
     // this line of code also links the VAO to the buffer array specificall the first param
-
-
-    // Vertex Attrib is not directly assoicated with a vertex buffer
-    // Vertex buffer is just a blob of data.  The attrib is dissassociated from the buffer until we enable that attr with that buffer array.
-
-    // Index Buffer - this MUST be unsigned int
-	unsigned int indicies[] = {
-	0, 1, 2,
-	2, 3, 0
-	};
-
-    unsigned int ibo;
-    GLCall(glGenBuffers(1, &ibo));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indicies, GL_STATIC_DRAW));
 
 
     ShaderProgramSource src = ParseShader("res/shaders/Basic.shader");
@@ -244,6 +204,7 @@ int main(void)
         // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
         // last param is the number of verticies to draw
         //glDrawArrays(GL_TRIANGLES, 0, 6);
+        ib.Bind();
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
 
         if (r > 1.0f) {
