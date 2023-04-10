@@ -10,11 +10,33 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 
-
+#pragma region Shader Code
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
 };
+
+// Shaders are just strings of code, we are passing it to OpenGL to compile and create a program object
+static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
+
+    // We are using this "program" to combine these two shaders
+    unsigned int program = glCreateProgram();       // returns a pointer to the blank program object
+    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+    // The follow operates similar to how C++ compiles/links code
+    // You first attach shaders to the program objecct
+    // Link the program and validate the code is correct
+    // Now you have "intermediate" shaders, so lets clean up by deleting them
+    GLCall(glAttachShader(program, vs));
+    GLCall(glAttachShader(program, fs));
+    GLCall(glLinkProgram(program));
+    GLCall(glValidateProgram(program));
+    GLCall(glDeleteShader(vs));
+    GLCall(glDeleteShader(fs));
+
+    return program;
+}
 
 static ShaderProgramSource ParseShader(const std::string& filePath) {
     // we need to parse and find our special syntax e.g. (#shader vertex) 
@@ -77,29 +99,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source) 
 
     return id;
 }
-
-
-// Shaders are just strings of code, we are passing it to OpenGL to compile and create a program object
-static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader) {
-    
-    // We are using this "program" to combine these two shaders
-    unsigned int program = glCreateProgram();       // returns a pointer to the blank program object
-    unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    // The follow operates similar to how C++ compiles/links code
-    // You first attach shaders to the program objecct
-    // Link the program and validate the code is correct
-    // Now you have "intermediate" shaders, so lets clean up by deleting them
-    GLCall(glAttachShader(program, vs));
-    GLCall(glAttachShader(program, fs));
-    GLCall(glLinkProgram(program));
-    GLCall(glValidateProgram(program));
-    GLCall(glDeleteShader(vs));
-    GLCall(glDeleteShader(fs));
-
-    return program;
-}
+#pragma endregion
 
 int main(void)
 {
@@ -119,7 +119,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "OpenGL - Project", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
