@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 
 struct ShaderProgramSource {
@@ -157,28 +158,19 @@ int main(void)
         2, 3, 0
         };
 
+
+        // Vertex Array is the encapulation of the vertex buffer and a layout (or attribute array)
+        VertexArray va;
         VertexBuffer vb(position, 4 * 2 * sizeof(float));
         IndexBuffer ib(indicies, 6);
 
 
-        // This is to enable the attribute in the array.  Otherwise the attribute will do nothing
-        GLCall(glEnableVertexAttribArray(0));
-
-        // Vertex is a blob of data
-        // Each vertex can be comprised of multiple attributes e.g. position, texture coordinates, color, etc.
-        // We are using VertextAttribPointer to describe our bound buffer attributes via an indexing system
-        // 5th param = stride = the number of bytes the pointer needs to go to find the next VERTEX aka next blob (NOT next attribute)
-        // 6th param = the pointer to the next attribute (in this case we only have one attribute so it defaults to zero
-        GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
-        // this line of code also links the VAO to the buffer array specificall the first param
+        VertexBufferLayout layout;
+        layout.Push<float>(2);
+        va.AddBuffer(vb, layout);
 
 
         ShaderProgramSource src = ParseShader("res/shaders/Basic.shader");
-        //std::cout << "Vertex\n";
-        //std::cout << src.VertexSource << std::endl;
-        //std::cout << "Fragment\n";
-        //std::cout << src.FragmentSource << std::endl;
-
         unsigned int shader = CreateShader(src.VertexSource, src.FragmentSource);
         GLCall(glUseProgram(shader));
 
@@ -205,6 +197,7 @@ int main(void)
             // we could clear the buffer by calling glBindBuffer(GL_ARRAY_BUFFER, 0)
             // last param is the number of verticies to draw
             //glDrawArrays(GL_TRIANGLES, 0, 6);
+            va.Bind();
             ib.Bind();
             GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // we are using nullptr since above we already Bound GL_ELEMENT_ARRAY_BUFFER to ibo
 
