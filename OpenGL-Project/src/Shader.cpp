@@ -37,10 +37,15 @@ int Shader::GetUniformLocation(const std::string& name) {
 	// Uniform allows us to define values in C++ and pass it to our shader program
 	// Uniforms are used as a per frame thing
 
+	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
+		return m_UniformLocationCache[name];
+	}
+
 	GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
 	if (location == -1) {
 		std::cout << "Warning: uniform '" << name << "' does not exist!.\n";
 	}
+	m_UniformLocationCache[name] = location;
 	return location;
 }
 
