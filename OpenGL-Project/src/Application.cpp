@@ -12,6 +12,9 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 #define WIN32
 
 #ifdef WIN32
@@ -102,19 +105,28 @@ int main(void) {
     Texture texture("res/textures/texture.png");
     Renderer renderer;
 
+    // this is to create a 4:3 ratio thing.  Since our createWindow is a 640:400
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    // does the same as above but smaller image
+    //glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+
+    texture.Bind();
+    // bind shader first before passing uniform data
+    shader.Bind();
+
 
     float r = 0.0f;
     float increment = 0.05f;
+
+    // pass slot number (0) to uniform
+    shader.SetUniform1i("u_Texture", 0);
+    shader.SetUniformMat4f("u_MVP", proj);
+
 
     while (!glfwWindowShouldClose(window)) {
 
       renderer.Clear();
 
-      texture.Bind();
-      // bind shader first before passing uniform data
-      shader.Bind();
-      // pass slot number (0) to uniform
-      shader.SetUniform1i("u_Texture", 0);
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
       renderer.Draw(va, ib, shader);
