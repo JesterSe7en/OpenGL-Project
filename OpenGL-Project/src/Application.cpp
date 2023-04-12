@@ -80,6 +80,10 @@ int main(void) {
 
     unsigned int indicies[] = {0, 1, 2, 2, 3, 0};
 
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+
     // Vertex Array is the encapulation of the vertex buffer and a layout (or
     // attribute array)
     VertexArray va;
@@ -93,7 +97,7 @@ int main(void) {
 
     Shader shader("res/shaders/Basic.shader");
     // stb_image supports jpg/png, and other stuff...check std_image.h
-    Texture texture("res/textures/texture.jpg");
+    Texture texture("res/textures/texture.png");
     Renderer renderer;
 
 
