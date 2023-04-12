@@ -46,7 +46,7 @@ int main(void) {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(640, 480, "OpenGL - Project", NULL, NULL);
+  window = glfwCreateWindow(960, 540, "OpenGL - Project", NULL, NULL);
   if (!window) {
     glfwTerminate();
     return -1;
@@ -73,12 +73,20 @@ int main(void) {
     GLCall(glGenVertexArrays(1, &vao));
     GLCall(glBindVertexArray(vao));
 
+    //float position[] = {
+    //  // we are adding another set of floats (the texture coordinates)
+    //    -0.5f, -0.5f, 0.0f, 0.0f, // 0
+    //    0.5f,  -0.5f, 1.0f, 0.0f,// 1
+    //    0.5f,  0.5f, 1.0f, 1.0f,  // 2
+    //    -0.5f, 0.5f, 0.0f, 1.0f, // 3
+    //};
+
     float position[] = {
       // we are adding another set of floats (the texture coordinates)
-        -0.5f, -0.5f, 0.0f, 0.0f, // 0
-        0.5f,  -0.5f, 1.0f, 0.0f,// 1
-        0.5f,  0.5f, 1.0f, 1.0f,  // 2
-        -0.5f, 0.5f, 0.0f, 1.0f, // 3
+        100.0f, 100.0f, 0.0f, 0.0f, // 0
+        200.0f,  100.0f, 1.0f, 0.0f,// 1
+        200.0f,  200.0f, 1.0f, 1.0f,  // 2
+        100.0f, 200.0f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indicies[] = {0, 1, 2, 2, 3, 0};
@@ -106,9 +114,15 @@ int main(void) {
     Renderer renderer;
 
     // this is to create a 4:3 ratio thing.  Since our createWindow is a 640:400
-    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    
+    // this is kind of like the bounds of my current view/camera
+    // any vertex positions outside of this (including the z value) will not rendered
+    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
     // does the same as above but smaller image
     //glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+
+    // by passing the proj matrix to our shader and multiplying it,
+    // we are converting it into its normalized device coordinates
 
     texture.Bind();
     // bind shader first before passing uniform data
