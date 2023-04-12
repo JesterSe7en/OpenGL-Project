@@ -5,12 +5,22 @@
 #include <sstream>
 #include <string>
 
-
 #include "IndexBuffer.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+
+#define WIN32
+
+#ifdef WIN32
+#include <windows.h>
+extern "C"
+{
+  __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+  __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif //def WIN32
 
 int main(void) {
   // use docs.gl for documentation
