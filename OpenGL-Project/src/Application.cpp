@@ -14,12 +14,13 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "Texture.h"
+
 
 #define WIN32
 
 #ifdef WIN32
 #include <windows.h>
-#include "Texture.h"
 extern "C"
 {
   __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
