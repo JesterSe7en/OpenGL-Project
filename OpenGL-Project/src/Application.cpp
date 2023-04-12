@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
 #define WIN32
 
@@ -88,30 +89,19 @@ int main(void) {
     va.AddBuffer(vb, layout);
 
     Shader shader("res/shaders/Basic.shader");
-    shader.Bind();
+    Renderer renderer;
 
     float r = 0.0f;
     float increment = 0.05f;
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window)) {
-      /* Render here */
-      glClear(GL_COLOR_BUFFER_BIT);
 
+    while (!glfwWindowShouldClose(window)) {
+
+      renderer.Clear();
+      
+      shader.Bind();
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
-      // this function call knows what buffer to use because on line 39, we
-      // bound the buffer we could clear the buffer by calling
-      // glBindBuffer(GL_ARRAY_BUFFER, 0) last param is the number of verticies
-      // to draw
-      // glDrawArrays(GL_TRIANGLES, 0, 6);
-
-      va.Bind();
-      ib.Bind();
-
-      GLCall(glDrawElements(
-          GL_TRIANGLES, 6, GL_UNSIGNED_INT,
-          nullptr)); // we are using nullptr since above we already Bound
-                     // GL_ELEMENT_ARRAY_BUFFER to ibo
+      renderer.Draw(va, ib, shader);
 
       if (r > 1.0f) {
         increment = -0.05f;
