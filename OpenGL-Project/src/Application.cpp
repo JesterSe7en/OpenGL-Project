@@ -16,6 +16,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#include "Texture.h"
 extern "C"
 {
   __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
@@ -70,10 +71,11 @@ int main(void) {
     GLCall(glBindVertexArray(vao));
 
     float position[] = {
-        -0.5f, -0.5f, // 0
-        0.5f,  -0.5f, // 1
-        0.5f,  0.5f,  // 2
-        -0.5f, 0.5f,  // 3
+      // we are adding another set of floats (the texture coordinates)
+        -0.5f, -0.5f, 0.0f, 0.0f, // 0
+        0.5f,  -0.5f, 1.0f, 0.0f,// 1
+        0.5f,  0.5f, 1.0f, 1.0f,  // 2
+        -0.5f, 0.5f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indicies[] = {0, 1, 2, 2, 3, 0};
@@ -81,15 +83,19 @@ int main(void) {
     // Vertex Array is the encapulation of the vertex buffer and a layout (or
     // attribute array)
     VertexArray va;
-    VertexBuffer vb(position, 4 * 2 * sizeof(float));
+    VertexBuffer vb(position, 4 * 4 * sizeof(float));
     IndexBuffer ib(indicies, 6);
 
     VertexBufferLayout layout;
     layout.Push<float>(2);
+    layout.Push<float>(2);
     va.AddBuffer(vb, layout);
 
     Shader shader("res/shaders/Basic.shader");
+    // stb_image supports jpg/png, and other stuff...check std_image.h
+    Texture texture("res/textures/texture.jpg");
     Renderer renderer;
+
 
     float r = 0.0f;
     float increment = 0.05f;
@@ -97,8 +103,12 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
 
       renderer.Clear();
-      
+
+      texture.Bind();
+      // bind shader first before passing uniform data
       shader.Bind();
+      // pass slot number (0) to uniform
+      shader.SetUniform1i("u_Texture", 0);
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
       renderer.Draw(va, ib, shader);
