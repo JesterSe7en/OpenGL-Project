@@ -121,6 +121,10 @@ int main(void) {
     // does the same as above but smaller image
     //glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
 
+    // just to illustrate what happends in the shader code
+    glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
+    glm::vec4 result = proj * vp;
+
     // by passing the proj matrix to our shader and multiplying it,
     // we are converting it into its normalized device coordinates
 
