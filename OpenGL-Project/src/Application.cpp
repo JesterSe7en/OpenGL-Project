@@ -81,6 +81,8 @@ int main(void) {
     unsigned int indicies[] = {0, 1, 2, 2, 3, 0};
 
     GLCall(glEnable(GL_BLEND));
+    // source is whatever is in our fragment shader (in the case of the texture example - it is the png itself)
+    // the destination is the is what is currently painted in the frame buffer - i.e. what is painted on the screen now
     GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 
