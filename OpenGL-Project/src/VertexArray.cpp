@@ -20,7 +20,7 @@ void VertexArray::AddBuffer(const VertexBuffer &vb,
   for (unsigned int i = 0; i < elements.size(); i++) {
     const auto &element = elements[i];
 
-    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glEnableVertexAttribArray(i));
     GLCall(glVertexAttribPointer(i, element.count, element.type,
                                  element.normalized, layout.GetStride(),
                                  (const void *)offset));
