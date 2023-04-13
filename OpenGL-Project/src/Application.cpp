@@ -123,9 +123,13 @@ int main(void) {
     //glm::mat4 proj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
 
     // just to illustrate what happends in the shader code
-    glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
-    glm::vec4 result = proj * vp;
+    //glm::vec4 vp(100.0f, 100.0f, 0.0f, 1.0f);
+    //glm::vec4 result = proj * vp;
 
+    // to simulate our camera moving to the left, all of our object in the 
+    // scene needs to move to the right hence -100 in the x direct
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+    glm::mat4 mvp = proj * view;
     // by passing the proj matrix to our shader and multiplying it,
     // we are converting it into its normalized device coordinates
 
@@ -139,8 +143,11 @@ int main(void) {
 
     // pass slot number (0) to uniform
     shader.SetUniform1i("u_Texture", 0);
-    shader.SetUniformMat4f("u_MVP", proj);
-
+    shader.SetUniformMat4f("u_MVP", mvp);  //mvp = model-view-projection matrix
+    //identified as three seperate matrixes that gets multiplied by the vertex buffer
+    // model = the actual model we are trying to render
+    // view = the "eye" or camera we are viewing the scene from
+    // projection = the window we are projecting this scene on to
 
     while (!glfwWindowShouldClose(window)) {
 

@@ -12,7 +12,7 @@ uniform mat4 u_MVP; //model view project matrix
 void main()
 {
 	//https://docs.gl/sl4/gl_Position
-	gl_Position = u_MVP * position ;
+	gl_Position = u_MVP * position;
 	v_TexCoord = texCoord;
 };
 
