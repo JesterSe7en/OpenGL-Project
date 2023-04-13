@@ -129,7 +129,9 @@ int main(void) {
     // to simulate our camera moving to the left, all of our object in the 
     // scene needs to move to the right hence -100 in the x direct
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-    glm::mat4 mvp = proj * view;
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200, 200, 0));
+
+    glm::mat4 mvp = proj * view * model;    // this order matters
     // by passing the proj matrix to our shader and multiplying it,
     // we are converting it into its normalized device coordinates
 
