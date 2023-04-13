@@ -16,6 +16,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Texture.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
 
 #define WIN32
 
@@ -151,9 +153,20 @@ int main(void) {
     // view = the "eye" or camera we are viewing the scene from
     // projection = the window we are projecting this scene on to
 
+    ImGui::CreateContext();
+    ImGui_ImplGlfwGL3_Init(window, true);
+    ImGui::StyleColorsDark();
+
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+
     while (!glfwWindowShouldClose(window)) {
 
       renderer.Clear();
+
+      ImGui_ImplGlfwGL3_NewFrame();
 
       shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
 
@@ -167,6 +180,27 @@ int main(void) {
 
       r += increment;
 
+      {
+        static float f = 0.0f;
+        static int counter = 0;
+        ImGui::Text("Hello, world!");                           // Display some text (you can use a format string too)
+        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
+        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our windows open/close state
+        ImGui::Checkbox("Another Window", &show_another_window);
+
+        if (ImGui::Button("Button"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
+          counter++;
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", counter);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+      }
+
+      ImGui::Render();
+      ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
       /* Swap front and back buffers */
       GLCall(glfwSwapBuffers(window));
 
@@ -175,6 +209,9 @@ int main(void) {
     }
   }
 
+  ImGui_ImplGlfwGL3_Shutdown();
+  ImGui::DestroyContext();
   glfwTerminate();
+
   return 0;
 }
