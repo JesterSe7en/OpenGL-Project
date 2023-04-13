@@ -80,10 +80,10 @@ int main(void) {
 
     float position[] = {
       // we are adding another set of floats (the texture coordinates)
-        100.0f, 100.0f, 0.0f, 0.0f, // 0
-        200.0f,  100.0f, 1.0f, 0.0f,// 1
-        200.0f,  200.0f, 1.0f, 1.0f,  // 2
-        100.0f, 200.0f, 0.0f, 1.0f, // 3
+        -50.0f, -50.0f, 0.0f, 0.0f, // 0
+        50.0f,  -50.0f, 1.0f, 0.0f,// 1
+        50.0f,  50.0f, 1.0f, 1.0f,  // 2
+        -50.0f, 50.0f, 0.0f, 1.0f, // 3
     };
 
     unsigned int indicies[] = {0, 1, 2, 2, 3, 0};
@@ -111,11 +111,10 @@ int main(void) {
     Renderer renderer;
 
     glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
    
     texture.Bind();
     shader.Bind();
-
 
     float r = 0.0f;
     float increment = 0.05f;
@@ -136,7 +135,8 @@ int main(void) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    glm::vec3 translation(200, 200, 0);
+    glm::vec3 translationA(200, 200, 0);
+    glm::vec3 translationB(400, 200, 0);
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -146,13 +146,19 @@ int main(void) {
       ImGui_ImplGlfw_NewFrame();
       ImGui::NewFrame();
 
-      glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
-      glm::mat4 mvp = proj * view * model;
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+				glm::mat4 mvp = proj * view * model;
+				shader.SetUniformMat4f("u_MVP", mvp);
+        renderer.Draw(va, ib, shader);
+			}
 
-      shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-      shader.SetUniformMat4f("u_MVP", mvp);
-
-      renderer.Draw(va, ib, shader);
+      {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+        glm::mat4 mvp = proj * view * model;
+        shader.SetUniformMat4f("u_MVP", mvp);
+        renderer.Draw(va, ib, shader);
+      }
 
       if (r > 1.0f) {
         increment = -0.05f;
@@ -164,7 +170,9 @@ int main(void) {
 
       {
         ImGui::Begin("Debug");
-        ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);
+        ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 960.0f);
+        ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.0f);
+
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
         ImGui::End();
