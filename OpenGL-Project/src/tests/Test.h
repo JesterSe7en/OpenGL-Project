@@ -11,6 +11,7 @@ namespace test {
 		Test() {}
 		virtual ~Test() {}
 
+		//if you wanna animate something, it goes into OnUpdate
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}

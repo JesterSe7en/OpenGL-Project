@@ -21,7 +21,6 @@ namespace test {
 	private:
 		glm::vec3 m_TranslationA;
 		glm::vec3 m_TranslationB;
-
 		glm::mat4 m_Proj, m_View;
 
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;

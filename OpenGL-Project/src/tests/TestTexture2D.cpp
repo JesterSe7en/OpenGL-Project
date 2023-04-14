@@ -27,10 +27,12 @@ namespace test {
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		m_VAO = std::make_unique<VertexArray>();
+
 		m_VertexBuffer = std::make_unique<VertexBuffer>(position, 4 * 4 * sizeof(float));
 		VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
+
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indicies, 6);
@@ -41,9 +43,7 @@ namespace test {
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
-	TestTexture2D::~TestTexture2D()
-	{
-	}
+	TestTexture2D::~TestTexture2D() {}
 
 	void TestTexture2D::OnImGuiRender()
 	{
@@ -79,7 +79,5 @@ namespace test {
 		}
 	}
 
-	void TestTexture2D::OnUpdate(float deltaTime)
-	{
-	}
+	void TestTexture2D::OnUpdate(float deltaTime)	{}
 }
